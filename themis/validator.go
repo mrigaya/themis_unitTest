@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/x509"
 	"strings"
-	"strconv"
 )
 
 // To verify client HostName in client cert against the valid client HostName provided
@@ -41,18 +40,13 @@ func matchClientHostnames(pattern, host string) bool {
 	}
 
 	for i, patternPart := range patternParts {
-		if i == 0 && patternPart == "*" && !IsInt(patternPart) && !IsInt(hostParts[i]) {
+		if i == 0 && patternPart == "*" {
 			continue
-		} else if i == 0 && strings.HasPrefix(hostParts[i], "*") && !IsInt(patternPart) && !IsInt(hostParts[i]) {
+		} else if i == 0 && strings.HasPrefix(hostParts[i], "*") {
 			// If wildcard * present in the hostName provided
 			// to be matched against the one given in cert.
 			// Make sure the string after * matches the cert sub domain pattern
 			tmpHostPart := strings.TrimPrefix(hostParts[i], "*")
-			if strings.Contains(patternPart, tmpHostPart) {
-				continue
-			}
-		} else if i == 0 &&  strings.HasSuffix(hostParts[i], "*") && !IsInt(patternPart) && !IsInt(hostParts[i]) {
-			tmpHostPart := strings.TrimSuffix(hostParts[i], "*")
 			if strings.Contains(patternPart, tmpHostPart) {
 				continue
 			}
@@ -63,15 +57,4 @@ func matchClientHostnames(pattern, host string) bool {
 	}
 
 	return true
-}
-
-func IsInt(str string) bool {
-
-    /** converting the str variable into an int **/
-    _, err := strconv.Atoi(str)
-    if err == nil {
-        return true
-    } else {
-        return false
-    }
 }

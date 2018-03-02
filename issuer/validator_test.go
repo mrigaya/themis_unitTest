@@ -2,6 +2,7 @@ package issuer
 
 import (
 	"testing"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestValidateMACAddress(t *testing.T) {
